@@ -1,0 +1,29 @@
+<!doctype html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %} RecSys {% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Система рекомендаций фильмов</title>
+</head>
+<body>
+{% include 'mail_service/includes/nav_menu.html' %}
+{% include 'films/includes/theme_switcher.html' %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="row">
+            <div class="col-12 mt-5 ms-5">
+                {% block title1%}<h1 class="text-center pb-3">Добро пожаловать в нашу систему рекомендаций фильмов!</h1>{% endblock %}
+                {% block content %}
+                {% endblock %}
+                {% include 'films/includes/footer.html' %}
+            </div>
+        </div>
+    </div>
+</div>
+<script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+</body>
+</html>

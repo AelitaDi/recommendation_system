@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
+from films.models import Genre
 
 NULLABLE = {
     'blank': True,
@@ -27,6 +28,11 @@ class User(AbstractUser):
         verbose_name="Аватар",
         help_text="Загрузите ваш аватар",
         **NULLABLE,
+    )
+
+    preferred_genres = models.ManyToManyField(
+        Genre,
+        verbose_name='Предпочитаемые жанры', help_text='Выберите интересные жанры'
     )
 
     USERNAME_FIELD = "email"
