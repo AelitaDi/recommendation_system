@@ -1,0 +1,44 @@
+{% extends 'films/base.html' %}
+{% block title %} Список фильмов {% endblock %}
+{% block title1 %}
+{% endblock %}
+{% block content %}
+<div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom box-shadow">
+    <div class="row text-start">
+        <h2 class="my-0 font-weight-normal">Список фильмов:</h2>
+        <ul class="list-group mt-3">
+            {% for film in object_list %}
+            <li class="list-group-item">
+
+                    <div class="d-flex align-items-center">
+                        {% if film.poster %}
+                        <img src="{{ film.poster.url }}" class="rounded-circle border" width="150" height="150"
+                             alt="Poster">
+                        {% else %}
+                        <div class="rounded-circle d-flex align-items-center justify-content-center bg-light border"
+                             style="width: 150px; height: 150px; font-size: 1.5rem; color: #666;">
+                            {{ film.title|first|upper }}
+                        </div>
+                        {% endif %}
+                        <div class="ms-4">
+                            <h3 class="mb-0">{{ film.title }}</h3>
+                            <p>Год выхода: {{ film.release_year }}</p>
+                            <p>{{ film.description|truncatechars:100 }}</p>
+                            <p><a href="{% url 'films:film_detail' film.pk %}"
+                                  class="btn btn-lg btn-block btn-outline-primary">Подробнее...</a>
+                        </div>
+                    </div>
+
+                {% endfor %}
+        </ul>
+        {% if user.is_staff %}
+        <a href="{% url 'films:film_create' %}" class="btn btn-outline-secondary mt-3">
+            Добавить фильм
+        </a>
+        {% endif %}
+        <a href="{% url 'films:home' %}" class="btn btn-outline-secondary mt-3">
+            На главную
+        </a>
+    </div>
+</div>
+{% endblock %}

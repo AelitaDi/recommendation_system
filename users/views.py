@@ -1,11 +1,9 @@
-import secrets
-
 from django.contrib import messages
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin, PermissionRequiredMixin
 from django.contrib.auth.views import LogoutView as DjangoLogoutView
 from django.shortcuts import redirect
 from django.urls import reverse_lazy, reverse
-from django.views.generic import CreateView, FormView, DetailView, UpdateView
+from django.views.generic import CreateView, FormView, DetailView, UpdateView, ListView
 
 from users.forms import UserRegisterForm, UserLoginForm, UserUpdateForm
 from users.models import User
@@ -17,7 +15,7 @@ class RegisterView(CreateView):
     success_url = reverse_lazy('users:login')
 
     def get_success_url(self):
-        return reverse_lazy('users:profile', kwargs={'pk': self.object.pk})
+        return reverse_lazy('users:login', kwargs={'pk': self.object.pk})
 
     def form_valid(self, form):
         response = super().form_valid(form)
@@ -44,7 +42,7 @@ class LogoutView(DjangoLogoutView):
     next_page = reverse_lazy('users:login')
 
     def dispatch(self, request, *args, **kwargs):
-        messages.info(request, 'You have successfully logged out.')
+        messages.info(request, 'Ждем вас снова!.')
         return super().dispatch(request, *args, **kwargs)
 
 
@@ -68,7 +66,7 @@ def my_profile_redirect(request):
 class ProfileUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = User
     form_class = UserUpdateForm
-    template_name = 'users/edit_profile.html'
+    template_name = 'users/user_form.html'
 
     def get_success_url(self):
         return reverse_lazy('users:profile', kwargs={'pk': self.request.user.pk})
@@ -82,3 +80,12 @@ class ProfileUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     def form_valid(self, form):
         messages.success(self.request, 'Ваш профиль успешно обновлен!')
         return super().form_valid(form)
+
+
+class UserListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
+    """
+    Класс для отображения списка пользователей.
+    """
+    model = User
+    permission_required = "users.view_user"
+    context_object_name = "users"

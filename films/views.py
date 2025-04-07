@@ -1,10 +1,15 @@
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.exceptions import PermissionDenied
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
+from django.utils.decorators import method_decorator
 from django.views.generic import ListView, DetailView, CreateView, TemplateView, UpdateView, DeleteView
 
 from films.forms import FilmForm, GenreForm, ProducerForm, ActorForm
 from films.models import Film, Genre, Producer, Actor
+from interactions.forms import InteractionForm
+from interactions.models import Interaction
 
 
 class StaffRequiredMixin(UserPassesTestMixin):
@@ -146,8 +151,25 @@ class FilmListView(ListView):
     #     return products
 
 
+@method_decorator(login_required, name='dispatch')
 class FilmDetailView(LoginRequiredMixin, DetailView):
     model = Film
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        film = self.get_object()
+        interaction = Interaction.objects.filter(user=self.request.user, film=film).first()
+        context['interaction_form'] = InteractionForm(instance=interaction)
+        context['user_rating'] = interaction.rating if interaction else None
+        return context
+
+    def post(self, request, *args, **kwargs):
+        film = self.get_object()
+        interaction, created = Interaction.objects.get_or_create(user=request.user, film=film)
+        form = InteractionForm(request.POST, instance=interaction)
+        if form.is_valid():
+            form.save()
+        return redirect('films:film_detail', pk=film.pk)
 
 
 class FilmCreateView(StaffRequiredMixin, CreateView):

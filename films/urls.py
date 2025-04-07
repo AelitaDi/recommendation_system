@@ -1,9 +1,9 @@
 from django.urls import path
 
 from films.apps import FilmsConfig
-from films.views import FilmListView, FilmDetailView, GenreListView, GenreDetailView, GenreCreateView, GenreUpdateView, \
-    GenreDeleteView, ProducerListView, ProducerDetailView, ProducerCreateView, ProducerUpdateView, ProducerDeleteView, \
-    HomeView, FilmCreateView, FilmUpdateView, FilmDeleteView, ActorListView, ActorDetailView, ActorCreateView, \
+from films.views import FilmListView, FilmDetailView, GenreListView, GenreDetailView, GenreCreateView, ActorListView, \
+    GenreUpdateView, GenreDeleteView, ProducerListView, ProducerDetailView, ProducerCreateView, ProducerUpdateView, \
+    ProducerDeleteView, HomeView, FilmCreateView, FilmUpdateView, FilmDeleteView, ActorDetailView, ActorCreateView, \
     ActorUpdateView, ActorDeleteView
 
 app_name = FilmsConfig.name
@@ -25,7 +25,7 @@ urlpatterns = [
     path('films/<int:pk>/delete/', FilmDeleteView.as_view(), name='film_delete'),
 
     # Producers CRUD
-    path('producers/', ProducerListView.as_view(), name='producers'),
+    path('producers/', ProducerListView.as_view(), name='producer_list'),
     path('producers/<int:pk>/', ProducerDetailView.as_view(), name='producer_detail'),
     path('producers/create/', ProducerCreateView.as_view(), name='producer_create'),
     path('producers/<int:pk>/update/', ProducerUpdateView.as_view(), name='producer_update'),

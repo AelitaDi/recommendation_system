@@ -10,18 +10,14 @@
     <title>Система рекомендаций фильмов</title>
 </head>
 <body>
-{% include 'mail_service/includes/nav_menu.html' %}
-{% include 'films/includes/theme_switcher.html' %}
-<div class="container-fluid">
-    <div class="row">
-        <div class="row">
-            <div class="col-12 mt-5 ms-5">
-                {% block title1%}<h1 class="text-center pb-3">Добро пожаловать в нашу систему рекомендаций фильмов!</h1>{% endblock %}
-                {% block content %}
-                {% endblock %}
-                {% include 'films/includes/footer.html' %}
-            </div>
-        </div>
+{% include 'films/includes/nav_menu.html' %}
+<div class="container-fluid mt-5">
+    <div class="ms-5">
+        {% block title1%}
+        {% endblock %}
+        {% block content %}
+        {% endblock %}
+        {% include 'films/includes/footer.html' %}
     </div>
 </div>
 <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>

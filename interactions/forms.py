@@ -15,8 +15,8 @@ class InteractionForm(forms.ModelForm, StyleFormMixin):
             'rating': forms.NumberInput(
                 attrs={
                     'min': 1,
-                    'max': 5,
-                    'step': 0.5
+                    'max': 10,
+                    'step': 1
                 }
             )
         }

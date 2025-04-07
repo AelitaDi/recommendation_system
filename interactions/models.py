@@ -6,7 +6,6 @@ from django.db.models import Avg
 import films.models
 import users.models
 
-
 NULLABLE = {
     'blank': True,
     'null': True
@@ -22,7 +21,7 @@ class Interaction(models.Model):
 
     rating = models.FloatField(
         **NULLABLE,
-        validators=[MinValueValidator(1.0), MaxValueValidator(5.0)]
+        validators=[MinValueValidator(1.0), MaxValueValidator(10.0)], verbose_name="Оценка"
     )
     timestamp = models.DateTimeField(auto_now_add=True)
 
@@ -43,8 +42,8 @@ class Interaction(models.Model):
             if instance.user != self.user:
                 raise PermissionDenied("Вы не можете изменить чужую оценку фильма.")
         super().save(*args, **kwargs)
-        self.film.average_rating = Interaction.objects.filter(film=self.film).aggregate(
-            Avg('rating')
-        )['rating__avg'] or 0.0
+        self.film.average_rating = Interaction.objects.filter(film=self.film).aggregate(Avg('rating'))[
+                                       'rating__avg'] or 0.0
+        print(self.film.average_rating)
 
         self.film.save()

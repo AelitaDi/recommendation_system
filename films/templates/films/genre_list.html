@@ -1,0 +1,25 @@
+{% extends 'films/base.html' %}
+{% block title %} Список жанров {% endblock %}
+{% block title1 %}
+{% endblock %}
+{% block content %}
+<div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom box-shadow">
+    <div class="row text-start">
+        <h2 class="font-weight-normal">Список жанров:</h2>
+        <ul class="list-group mt-3">
+            {% for genre in object_list %}
+            <li class="list-group-item">
+                <p>{{genre.name}}</p>
+                {% endfor %}
+        </ul>
+        {% if user.is_staff %}
+        <a href="{% url 'films:genre_create' %}" class="btn btn-outline-secondary mt-3">
+            Добавить жанр
+        </a>
+        {% endif %}
+        <a href="{% url 'films:home' %}" class="btn btn-outline-secondary mt-3">
+            На главную
+        </a>
+    </div>
+</div>
+{% endblock %}

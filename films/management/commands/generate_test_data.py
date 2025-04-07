@@ -65,20 +65,20 @@ class Command(BaseCommand):
         Genre.objects.bulk_create(genre_objects)
         genres = Genre.objects.all()
 
-        print(f'Создаю режиссеров...')
-        producer_list = [Producer(name=f'Режиссер {i}', bio=f'Режиссер {i} Биография') for i in range(1, num_producers + 1)]
+        print('Создаю режиссеров...')
+        producer_list = [Producer(name=f'Режиссер {i}', bio=f'Режиссер {i} Биография') for i in
+                         range(1, num_producers + 1)]
         Producer.objects.bulk_create(producer_list)
         producers = Producer.objects.all()
 
-        print(f'Создаю актеров...')
+        print('Создаю актеров...')
         actor_list = [Producer(name=f'Актер {i}', bio=f'Актер {i} Биография') for i in range(1, num_actors + 1)]
         Actor.objects.bulk_create(actor_list)
         actors = Actor.objects.all()
 
-        print(f'Создаю фильмы...')
+        print('Создаю фильмы...')
         films = []
         for i in range(1, num_films + 1):
-
             film = Film(
                 title=f'Фильм {i}',
                 producer=random.choice(producers),
@@ -105,8 +105,7 @@ class Command(BaseCommand):
             user.preferred_genres.add(*random.sample(list(genres), k=random.randint(2, 4)))
 
         self.stdout.write('Создаю взаимосвязи...')
-        interactions = []
-        all_films = list(Film.objects.all())
+        interaction_list = []
         all_users = User.objects.all()
 
         for user in all_users:
@@ -130,15 +129,15 @@ class Command(BaseCommand):
                     weights=[0.3, 0.7]
                 )[0]
 
-                interactions.append(Interaction(
+                interaction_list.append(Interaction(
                     user=user,
                     film=film,
                     rating=rating,
                 ))
 
-        Interaction.objects.bulk_create(interactions)
+        Interaction.objects.bulk_create(interaction_list)
 
-        self.stdout.write('Пересчитываю средний рейтинг фильмов...')
+        print('Пересчитываю средний рейтинг фильмов...')
         films_to_update = Film.objects.filter(interaction__isnull=False).distinct()
         for film in films_to_update:
             film.average_rating = Interaction.objects.filter(film=film).aggregate(

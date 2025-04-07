@@ -26,7 +26,7 @@ class UserLoginForm(AuthenticationForm):
     username = forms.EmailField(label='Email')
 
 
-class UserUpdateForm(StyleFormMixin, UserChangeForm):
+class UserUpdateForm(StyleFormMixin, UserCreationForm):
     """
     Форма редактирования данных пользователя.
     """
@@ -39,4 +39,4 @@ class UserUpdateForm(StyleFormMixin, UserChangeForm):
 
     class Meta:
         model = User
-        fields = ('phone_number', 'avatar', 'city', 'preferred_genres')
+        fields = ('phone_number', 'avatar', 'city', 'preferred_genres',)

@@ -1,0 +1,30 @@
+{% extends 'films/base.html' %}
+{% block title %} Список актеров {% endblock %}
+{% block title1 %}
+{% endblock %}
+{% block content %}
+<div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom box-shadow">
+    <div class="row text-start">
+        <h2 class="font-weight-normal">Список актеров:</h2>
+        <ul class="list-group mt-3">
+            {% for actor in object_list %}
+            <li class="list-group-item">
+                <h5>{{ actor.name }}</h5>
+                <p>{{ actor.bio|truncatechars:100 }}</p>
+                <p><a href="{% url 'films:actor_detail' actor.pk %}"
+                      class="btn btn-block btn-outline-primary">Подробнее...</a>
+                </p>
+            </li>
+                    {% endfor %}
+        </ul>
+        {% if user.is_staff %}
+        <a href="{% url 'films:actor_create' %}" class="btn btn-outline-secondary mt-3">
+            Добавить актера
+        </a>
+        {% endif %}
+        <a href="{% url 'films:home' %}" class="btn btn-outline-secondary mt-3">
+            На главную
+        </a>
+    </div>
+</div>
+{% endblock %}

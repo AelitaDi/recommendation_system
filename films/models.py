@@ -11,7 +11,7 @@ class Genre(models.Model):
     """
     Модель жанра.
     """
-    name = models.CharField(max_length=100, unique=True)
+    name = models.CharField(max_length=100, unique=True, verbose_name='Наименование')
 
     class Meta:
         verbose_name = 'Жанр'
@@ -68,7 +68,7 @@ class Film(models.Model):
 
     average_rating = models.FloatField(
         default=0.0,
-        validators=[MinValueValidator(0.0), MaxValueValidator(5.0)],
+        validators=[MinValueValidator(0.0), MaxValueValidator(10.0)],
         verbose_name='Рейтинг фильма'
     )
 

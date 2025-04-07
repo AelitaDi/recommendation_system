@@ -2,11 +2,14 @@
 {% block title %} Главная {% endblock %}
 {% block title1 %}
 <div class="pricing-header px-2 pb-md-4 text-center">
-    <h2>Приветствуем Вас на главной странице</h2>
-    <h3>Здесь мы собрали статистику нашего сервиса</h3>
+    <h2>Приветствуем Вас на главной странице!</h2>
+    <h3>
+        <button type="button" class="btn btn-lg btn-block btn-outline-primary h3 me-3">Здесь</button>
+        мы собрали статистику нашего сервиса
+    </h3>
 </div>
 {% endblock %}
 {% block content %}
-<h3>Количество фильмов: {{ film_count }}</h3>
-<h3>Количество пользователей: {{ user_count }}</h3>
+    <h3>Наш сервис рекомендаций использует для работы данные: </h3>
+    <h3>о ... фильмах и ... пользователях</h3>
 {% endblock %}
