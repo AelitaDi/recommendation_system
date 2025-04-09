@@ -12,6 +12,7 @@ from films.forms import FilmForm, GenreForm, ProducerForm, ActorForm
 from films.models import Film, Genre, Producer, Actor
 from interactions.forms import InteractionForm
 from interactions.models import Interaction
+from recommendations.algorithms.knn import KNN
 from recommendations.algorithms.pagerank import PageRank
 from recommendations.services import graph_builder
 
@@ -56,8 +57,8 @@ class RecommendationView(LoginRequiredMixin, TemplateView):
                 cache.set('user_book_graph', G, timeout=300)
         user_id = self.request.user.id
         context["pagerank_recommendations"] = PageRank.recommendations(user_id, G, 10)
+        context['knn_recommendations'] = KNN.recommendations(user_id, 10)
         # context['collaborative_recommendations'] = get_collaborative_recommendations_service(user_id)
-        # context['knn_recommendations'] = get_knn_recommendations_service(user_id)
 
         return context
 

@@ -19,9 +19,9 @@ class Interaction(models.Model):
     user = models.ForeignKey(users.models.User, on_delete=models.CASCADE)
     film = models.ForeignKey(films.models.Film, on_delete=models.CASCADE)
 
-    rating = models.FloatField(
+    rating = models.IntegerField(
         **NULLABLE,
-        validators=[MinValueValidator(1.0), MaxValueValidator(10.0)], verbose_name="Оценка"
+        validators=[MinValueValidator(1), MaxValueValidator(10)], verbose_name="Оценка"
     )
     timestamp = models.DateTimeField(auto_now_add=True)
 
@@ -47,3 +47,6 @@ class Interaction(models.Model):
         print(self.film.average_rating)
 
         self.film.save()
+
+    def __str__(self):
+        return f'{self.user} {self.film} {self.rating}'

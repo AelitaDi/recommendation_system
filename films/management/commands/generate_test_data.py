@@ -104,7 +104,7 @@ class Command(BaseCommand):
             )
             user.preferred_genres.add(*random.sample(list(genres), k=random.randint(2, 4)))
 
-        self.stdout.write('Создаю взаимосвязи...')
+        self.stdout.write('Создаю оценки...')
         interaction_list = []
         all_users = User.objects.all()
 
@@ -125,7 +125,7 @@ class Command(BaseCommand):
 
             for film in preferred_sample + other_sample:
                 rating = random.choices(
-                    [None, round(random.uniform(3.0, 5.0), 1)],
+                    [None, round(random.randint(3, 10), 1)],
                     weights=[0.3, 0.7]
                 )[0]
 
@@ -152,5 +152,5 @@ class Command(BaseCommand):
             f'- {Film.objects.count()} фильмов\n'
             f'- {Actor.objects.count()} актеров\n'
             f'- {User.objects.count()} пользователей\n'
-            f'- {Interaction.objects.count()} взаимодействий'
+            f'- {Interaction.objects.count()} оценок'
         )
