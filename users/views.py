@@ -15,7 +15,7 @@ class RegisterView(CreateView):
     success_url = reverse_lazy('users:login')
 
     def get_success_url(self):
-        return reverse_lazy('users:login', kwargs={'pk': self.object.pk})
+        return reverse_lazy('users:login')
 
     def form_valid(self, form):
         response = super().form_valid(form)

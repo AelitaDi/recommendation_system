@@ -69,7 +69,7 @@
                         <li><a class="dropdown-item" href="{% url 'films:producer_list' %}">Режиссеры</a></li>
                         <li><a class="dropdown-item" href="{% url 'films:actor_list' %}">Актеры</a></li>
                         <li><a class="dropdown-item" href="#">Статистика</a></li>
-                        <li><a class="dropdown-item" href="#">Рекомендации</a></li>
+                        <li><a class="dropdown-item" href="{% url 'films:recommendations' %}">Рекомендации</a></li>
                     </ul>
                 </li>
                 {% else %}

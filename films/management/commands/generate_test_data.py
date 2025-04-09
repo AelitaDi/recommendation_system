@@ -98,7 +98,7 @@ class Command(BaseCommand):
 
         print('Создаю пользователей...')
         for i in range(1, num_users + 1):
-            user = User.objects.create_user(
+            user = User.objects.create(
                 email=f'test_user_{i}@example.com',
                 password='password'
             )

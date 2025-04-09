@@ -1,0 +1,30 @@
+{% extends 'films/base.html' %}
+{% block title %}Рекомендации{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Рекомендуем вам посмотреть:</h2>
+
+    <div class="accordion" id="recommendationAccordion">
+        <!-- PageRank -->
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingPagerank">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapsePagerank">
+                    Подборка на основе алгоритма PageRank
+                </button>
+            </h2>
+            <div id="collapsePagerank" class="accordion-collapse collapse show"
+                 data-bs-parent="#recommendationAccordion">
+                <div class="accordion-body">
+                    {% for film in pagerank_recommendations %}
+                    <a href="{% url 'films:film_detail' film.id %}" class="btn btn-primary">{{ film.title }}</a>
+                    {% empty %}
+                    <p>Похоже, мы не можем вам ничего порекомендовать.</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -4,7 +4,7 @@ from films.apps import FilmsConfig
 from films.views import FilmListView, FilmDetailView, GenreListView, GenreDetailView, GenreCreateView, ActorListView, \
     GenreUpdateView, GenreDeleteView, ProducerListView, ProducerDetailView, ProducerCreateView, ProducerUpdateView, \
     ProducerDeleteView, HomeView, FilmCreateView, FilmUpdateView, FilmDeleteView, ActorDetailView, ActorCreateView, \
-    ActorUpdateView, ActorDeleteView
+    ActorUpdateView, ActorDeleteView, RecommendationView
 
 app_name = FilmsConfig.name
 
@@ -42,5 +42,7 @@ urlpatterns = [
     path('', HomeView.as_view(), name='home'),
 
     # Statistics
-    # path('statistics/', StatisticsView.as_view(), name='statistics')
+    # path('statistics/', StatisticsView.as_view(), name='statistics'),
+    # Recommendations
+    path('recommendations/', RecommendationView.as_view(), name='recommendations'),
 ]

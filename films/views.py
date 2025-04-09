@@ -1,15 +1,19 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.core.cache import cache
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView, DetailView, CreateView, TemplateView, UpdateView, DeleteView
 
+from config.settings import CACHE_ENABLED
 from films.forms import FilmForm, GenreForm, ProducerForm, ActorForm
 from films.models import Film, Genre, Producer, Actor
 from interactions.forms import InteractionForm
 from interactions.models import Interaction
+from recommendations.algorithms.pagerank import PageRank
+from recommendations.services import graph_builder
 
 
 class StaffRequiredMixin(UserPassesTestMixin):
@@ -31,6 +35,30 @@ class HomeView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        return context
+
+
+class RecommendationView(LoginRequiredMixin, TemplateView):
+    """
+    Контроллер для отображения рекомендаций.
+    """
+    template_name = 'films/recommendations.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if not CACHE_ENABLED:
+            G = graph_builder()
+        else:
+            key = 'graph'
+            G = cache.get(key)
+            if not G:
+                G = graph_builder()
+                cache.set('user_book_graph', G, timeout=300)
+        user_id = self.request.user.id
+        context["pagerank_recommendations"] = PageRank.recommendations(user_id, G, 10)
+        # context['collaborative_recommendations'] = get_collaborative_recommendations_service(user_id)
+        # context['knn_recommendations'] = get_knn_recommendations_service(user_id)
+
         return context
 
 
