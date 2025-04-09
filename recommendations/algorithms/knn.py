@@ -25,6 +25,8 @@ class KNN:
             Interaction.objects.filter(film_id__in=ranked_films, rating__isnull=False).distinct().exclude(
                 user=user_id).values_list('user_id',
                                           flat=True))
+
+        # Вычисление "расстояний" между пользователями
         nei_dist_list = []
         for nei in neighbours:
             total = 0
@@ -36,12 +38,15 @@ class KNN:
             distance = math.sqrt(total)
             nei_dist_list.append({'user': nei, 'distance': distance})
 
+        # Сортировка пользователей по близости
         sorted_nei_list = sorted(nei_dist_list, key=lambda x: x['distance'])
         sorted_nei = list(nei['user'] for nei in sorted_nei_list)
+
         k = round(math.sqrt(len(User.objects.all())))
         top_films = Interaction.objects.filter(user_id__in=sorted_nei[:k], rating__gte=4).exclude(
             film_id__in=ranked_films).values_list('film_id', flat=True).distinct()
 
+        # Получение рекомендаций
         rec_films = []
         for f in top_films:
             rec_films.append({'film_id': f, 'av_r': Film.objects.get(id=f).average_rating})

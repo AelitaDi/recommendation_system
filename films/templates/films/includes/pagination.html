@@ -1,0 +1,20 @@
+<!-- pagination.html -->
+<div class="row mt-3">
+    <div class="col-4">
+        <nav aria-label="Page navigation">
+            <ul class="pagination">
+                {% for p in page_obj.paginator.page_range %}
+                {% if page_obj.number == p %}
+                <li class="page-item active" aria-current="page">
+                    <a class="page-link" href="#">{{ p }}</a>
+                </li>
+                {% else %}
+                <li class="page-item">
+                    <a href="?page={{ p }}" class="page-link">{{ p }}</a>
+                </li>
+                {% endif %}
+                {% endfor %}
+            </ul>
+        </nav>
+    </div>
+</div>

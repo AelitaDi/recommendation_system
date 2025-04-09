@@ -12,6 +12,7 @@
                 <p>{{genre.name}}</p>
                 {% endfor %}
         </ul>
+        {% include 'films/includes/pagination.html' %}
         {% if user.is_staff %}
         <a href="{% url 'films:genre_create' %}" class="btn btn-outline-secondary mt-3">
             Добавить жанр

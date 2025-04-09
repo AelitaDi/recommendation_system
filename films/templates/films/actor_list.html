@@ -17,6 +17,7 @@
             </li>
                     {% endfor %}
         </ul>
+        {% include 'films/includes/pagination.html' %}
         {% if user.is_staff %}
         <a href="{% url 'films:actor_create' %}" class="btn btn-outline-secondary mt-3">
             Добавить актера
