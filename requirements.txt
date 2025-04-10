@@ -14,3 +14,6 @@ numpy==2.2.4
 matplotlib==3.10.1
 redis==5.2.1
 scipy==1.15.2
+djangorestframework==3.16.0
+djangorestframework_simplejwt==5.5.0
+drf-yasg==1.21.10

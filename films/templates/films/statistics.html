@@ -1,0 +1,64 @@
+{% extends 'films/base.html' %}
+{% block title %}Статистика{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-10 col-lg-7">
+            <a class="btn btn-outline-secondary mt-3 mb-3" href="{% url 'films:home' %}">На главную</a>
+
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Статистика</h5>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>Всего фильмов:</span>
+                        <strong>{{ films_count }}</strong>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>Всего пользователей:</span>
+                        <strong>{{ users_count }}</strong>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>Новых фильмов за неделю:</span>
+                        <strong>{{ new_films_week_count }}</strong>
+                    </li>
+
+                    <!-- Top Rated Films -->
+                    <li class="list-group-item">
+                        <h6 class="mb-2">Самые популярные фильмы:</h6>
+                        <ul class="list-unstyled ps-2">
+                            {% for film in top_rated_films %}
+                                <li class="mb-1">
+                                    <a href="{% url 'films:film_detail' film.pk %}" class="text-decoration-none">
+                                        {{ film.title }} - <span class="text-muted">{{ film.producer.name }}</span>
+                                    </a>
+                                </li>
+                            {% empty %}
+                                <li class="text-muted">Упс. Кажется, еще нет фильмов. Или их еще никто не оценил.</li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+
+                    <!-- Top Active Users -->
+                    <li class="list-group-item">
+                        <h6 class="mb-2">Активные пользователи:</h6>
+                        <ul class="list-unstyled ps-2">
+                            {% for user in top_active_users %}
+                                <li class="mb-1">
+                                    <a href="{% url 'users:profile' user.pk %}" class="text-decoration-none">
+                                        {{ user.email }}
+                                    </a>
+                                </li>
+                            {% empty %}
+                                <li class="text-muted">Упс. Не нашлось активных пользователей. Стань первым!.</li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,6 +1,8 @@
 import os
 import django
 
+from recommendations.services import create_recommendation
+
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
 django.setup()
 
@@ -9,6 +11,7 @@ import math
 from films.models import Film
 from interactions.models import Interaction
 from users.models import User
+from recommendations.models import Recommendation
 
 
 class KNN:
@@ -46,15 +49,20 @@ class KNN:
         top_films = Interaction.objects.filter(user_id__in=sorted_nei[:k], rating__gte=4).exclude(
             film_id__in=ranked_films).values_list('film_id', flat=True).distinct()
 
-        # Получение рекомендаций
+        # Получение списка фильмов
         rec_films = []
         for f in top_films:
             rec_films.append({'film_id': f, 'av_r': Film.objects.get(id=f).average_rating})
 
         sorted_top_n_rec_films = sorted(rec_films, key=lambda x: x['av_r'], reverse=True)[:top_n]
+        film_id_list = list(x['film_id'] for x in sorted_top_n_rec_films)
 
-        return list(Film.objects.get(id=x['film_id']) for x in sorted_top_n_rec_films)
+        # Создание рекомендации
+        user = User.objects.get(id=user_id)
+        recommendation = create_recommendation(user, 'knn', film_id_list)
+
+        return list(recommendation.films.all())
 
 
 if __name__ == '__main__':
-    print(KNN.recommendations(4, 10))
+    print(KNN.recommendations(66, 5))

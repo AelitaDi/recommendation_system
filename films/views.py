@@ -14,7 +14,7 @@ from interactions.forms import InteractionForm
 from interactions.models import Interaction
 from recommendations.algorithms.knn import KNN
 from recommendations.algorithms.pagerank import PageRank
-from recommendations.services import graph_builder
+from recommendations.services import graph_builder, get_statistics
 
 
 class StaffRequiredMixin(UserPassesTestMixin):
@@ -47,19 +47,18 @@ class RecommendationView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        if not CACHE_ENABLED:
-            G = graph_builder()
-        else:
-            key = 'graph'
-            G = cache.get(key)
-            if not G:
-                G = graph_builder()
-                cache.set('user_book_graph', G, timeout=300)
         user_id = self.request.user.id
-        context["pagerank_recommendations"] = PageRank.recommendations(user_id, G, 10)
-        context['knn_recommendations'] = KNN.recommendations(user_id, 10)
-        # context['collaborative_recommendations'] = get_collaborative_recommendations_service(user_id)
-
+        if not CACHE_ENABLED:
+            recs = {'pr_rec': PageRank.recommendations(user_id, 10),
+                    'knn_rec': KNN.recommendations(user_id, 10)}
+        else:
+            key = 'recs'
+            recs = cache.get(key)
+            if not recs:
+                recs = {'pr_rec': PageRank.recommendations(user_id, 10),
+                        'knn_rec': KNN.recommendations(user_id, 10)}
+                cache.set('recs', recs, timeout=300)
+        context.update(recs)
         return context
 
 
@@ -68,18 +67,14 @@ class StatisticsView(TemplateView):
     Контроллер для отображения статистика сервиса.
     """
     pass
-    # template_name = 'films/statistics.html'
-    #
-    # def get_context_data(self, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #     statistics_data = get_statistics()
-    #     context['books_count'] = statistics_data['books_count']
-    #     context['users_count'] = statistics_data['users_count']
-    #     context['new_books_week_count'] = statistics_data['new_books_week_count']
-    #     context['top_rated_books'] = statistics_data['top_rated_books']
-    #     context['top_active_users'] = statistics_data['top_active_users']
-    #
-    #     return context
+    template_name = 'films/statistics.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        statistics_data = get_statistics()
+        context.update(statistics_data)
+
+        return context
 
 
 # Genre CRUD

@@ -11,13 +11,13 @@
             <h2 class="accordion-header" id="headingPagerank">
                 <button class="accordion-button" type="button" data-bs-toggle="collapse"
                         data-bs-target="#collapsePagerank">
-                    Подборка на основе алгоритма PageRank
+                    Подборка на основе алгоритма PageRank:
                 </button>
             </h2>
             <div id="collapsePagerank" class="accordion-collapse collapse show"
                  data-bs-parent="#recommendationAccordion">
                 <div class="accordion-body">
-                    {% for film in pagerank_recommendations %}
+                    {% for film in pr_rec %}
                     <a href="{% url 'films:film_detail' film.id %}" class="btn btn-primary">{{ film.title }} {{ film.release_year}}</a>
                     {% empty %}
                     <p>Похоже, мы не можем вам ничего порекомендовать.</p>
@@ -30,13 +30,13 @@
             <h2 class="accordion-header" id="headingKNN">
                 <button class="accordion-button" type="button" data-bs-toggle="collapse"
                         data-bs-target="#collapsePagerank">
-                    Подборка на основе алгоритма k-ближайших соседей
+                    Подборка на основе алгоритма k-ближайших соседей:
                 </button>
             </h2>
             <div id="collapseKNN" class="accordion-collapse collapse show"
                  data-bs-parent="#recommendationAccordion">
                 <div class="accordion-body">
-                    {% for film in knn_recommendations %}
+                    {% for film in knn_rec %}
                     <a href="{% url 'films:film_detail' film.id %}" class="btn btn-primary">{{ film.title }} {{ film.release_year}}</a>
                     {% empty %}
                     <p>Похоже, мы не можем вам ничего порекомендовать.</p>

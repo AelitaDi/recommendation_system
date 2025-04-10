@@ -100,9 +100,11 @@ class Command(BaseCommand):
         for i in range(1, num_users + 1):
             user = User.objects.create(
                 email=f'test_user_{i}@example.com',
-                password='password'
             )
+            user.set_password("password")
+            user.is_active = True
             user.preferred_genres.add(*random.sample(list(genres), k=random.randint(2, 4)))
+            user.save()
 
         self.stdout.write('Создаю оценки...')
         interaction_list = []

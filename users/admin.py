@@ -5,4 +5,4 @@ from users.models import User
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    exclude = ("password",)
+    list_display = ('email', 'id',)
