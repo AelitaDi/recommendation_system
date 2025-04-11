@@ -16,7 +16,12 @@
 -   PostgreSQL (как основная база данных)
     
 -   Установленные зависимости из  `requirements.txt`
-### 2. Установка зависимостей
+### 2. Клонируйте репозиторий:
+```
+git clone https://github.com/AelitaDi/recommendation_system
+cd recommendation_system
+```
+### 3. Установка зависимостей
 
 1.  Создайте виртуальное окружение:
 	```
@@ -28,7 +33,7 @@
 	```
     pip install -r requirements.txt
 	```
-### 3. Настройка Redis
+### 4. Настройка Redis
 1. Установите Redis (если ещё не установлен):
 
 	- **Linux**:  `sudo apt install redis`
@@ -38,7 +43,7 @@
 	```
 	redis-server.exe
 	```
-### 4. Подключение БД и Redis
+### 5. Подключение БД и Redis
 1.  Создайте файл **.env** и заполните его по образцу **.env.sample**:
 	```
     SECRET_KEY=django-insecure-12345!abcde67890!@#qwerty

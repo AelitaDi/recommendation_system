@@ -5,7 +5,14 @@ from django.core.exceptions import PermissionDenied
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
-from django.views.generic import ListView, DetailView, CreateView, TemplateView, UpdateView, DeleteView
+from django.views.generic import (
+    ListView,
+    DetailView,
+    CreateView,
+    TemplateView,
+    UpdateView,
+    DeleteView,
+)
 
 from config.settings import CACHE_ENABLED
 from films.forms import FilmForm, GenreForm, ProducerForm, ActorForm
@@ -14,13 +21,14 @@ from interactions.forms import InteractionForm
 from interactions.models import Interaction
 from recommendations.algorithms.knn import KNN
 from recommendations.algorithms.pagerank import PageRank
-from recommendations.services import graph_builder, get_statistics
+from recommendations.services import get_statistics
 
 
 class StaffRequiredMixin(UserPassesTestMixin):
     """
     Миксин проверяет наличие у пользователя прав is_staff.
     """
+
     def test_func(self):
         return self.request.user.is_staff
 
@@ -32,7 +40,8 @@ class HomeView(TemplateView):
     """
     Home view.
     """
-    template_name = 'films/home.html'
+
+    template_name = "films/home.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -43,21 +52,26 @@ class RecommendationView(LoginRequiredMixin, TemplateView):
     """
     Контроллер для отображения рекомендаций.
     """
-    template_name = 'films/recommendations.html'
+
+    template_name = "films/recommendations.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user_id = self.request.user.id
         if not CACHE_ENABLED:
-            recs = {'pr_rec': PageRank.recommendations(user_id, 10),
-                    'knn_rec': KNN.recommendations(user_id, 10)}
+            recs = {
+                "pr_rec": PageRank.recommendations(user_id, 10),
+                "knn_rec": KNN.recommendations(user_id, 10),
+            }
         else:
-            key = 'recs'
+            key = "recs"
             recs = cache.get(key)
             if not recs:
-                recs = {'pr_rec': PageRank.recommendations(user_id, 10),
-                        'knn_rec': KNN.recommendations(user_id, 10)}
-                cache.set('recs', recs, timeout=300)
+                recs = {
+                    "pr_rec": PageRank.recommendations(user_id, 10),
+                    "knn_rec": KNN.recommendations(user_id, 10),
+                }
+                cache.set("recs", recs, timeout=300)
         context.update(recs)
         return context
 
@@ -66,8 +80,9 @@ class StatisticsView(TemplateView):
     """
     Контроллер для отображения статистика сервиса.
     """
+
     pass
-    template_name = 'films/statistics.html'
+    template_name = "films/statistics.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -90,18 +105,18 @@ class GenreDetailView(DetailView):
 class GenreCreateView(StaffRequiredMixin, CreateView):
     model = Genre
     form_class = GenreForm
-    success_url = reverse_lazy('films:genre_list')
+    success_url = reverse_lazy("films:genre_list")
 
 
 class GenreUpdateView(StaffRequiredMixin, UpdateView):
     model = Genre
     form_class = GenreForm
-    success_url = reverse_lazy('films:genre_list')
+    success_url = reverse_lazy("films:genre_list")
 
 
 class GenreDeleteView(StaffRequiredMixin, DeleteView):
     model = Genre
-    success_url = reverse_lazy('films:genre_list')
+    success_url = reverse_lazy("films:genre_list")
 
 
 # Producer CRUD
@@ -117,18 +132,18 @@ class ProducerDetailView(DetailView):
 class ProducerCreateView(StaffRequiredMixin, CreateView):
     model = Producer
     form_class = ProducerForm
-    success_url = reverse_lazy('films:producer_list')
+    success_url = reverse_lazy("films:producer_list")
 
 
 class ProducerUpdateView(StaffRequiredMixin, UpdateView):
     model = Producer
     form_class = ProducerForm
-    success_url = reverse_lazy('films:producer_list')
+    success_url = reverse_lazy("films:producer_list")
 
 
 class ProducerDeleteView(StaffRequiredMixin, DeleteView):
     model = Producer
-    success_url = reverse_lazy('films:producer_list')
+    success_url = reverse_lazy("films:producer_list")
 
 
 # Actor CRUD
@@ -144,18 +159,18 @@ class ActorDetailView(DetailView):
 class ActorCreateView(StaffRequiredMixin, CreateView):
     model = Actor
     form_class = ActorForm
-    success_url = reverse_lazy('films:actor_list')
+    success_url = reverse_lazy("films:actor_list")
 
 
 class ActorUpdateView(StaffRequiredMixin, UpdateView):
     model = Actor
     form_class = ActorForm
-    success_url = reverse_lazy('films:actor_list')
+    success_url = reverse_lazy("films:actor_list")
 
 
 class ActorDeleteView(StaffRequiredMixin, DeleteView):
     model = Actor
-    success_url = reverse_lazy('films:actor_list')
+    success_url = reverse_lazy("films:actor_list")
 
 
 # Film CRUD
@@ -175,39 +190,43 @@ class FilmListView(ListView):
     #     return products
 
 
-@method_decorator(login_required, name='dispatch')
+@method_decorator(login_required, name="dispatch")
 class FilmDetailView(LoginRequiredMixin, DetailView):
     model = Film
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         film = self.get_object()
-        interaction = Interaction.objects.filter(user=self.request.user, film=film).first()
-        context['interaction_form'] = InteractionForm(instance=interaction)
-        context['user_rating'] = interaction.rating if interaction else None
+        interaction = Interaction.objects.filter(
+            user=self.request.user, film=film
+        ).first()
+        context["interaction_form"] = InteractionForm(instance=interaction)
+        context["user_rating"] = interaction.rating if interaction else None
         return context
 
     def post(self, request, *args, **kwargs):
         film = self.get_object()
-        interaction, created = Interaction.objects.get_or_create(user=request.user, film=film)
+        interaction, created = Interaction.objects.get_or_create(
+            user=request.user, film=film
+        )
         form = InteractionForm(request.POST, instance=interaction)
         if form.is_valid():
             form.save()
-        return redirect('films:film_detail', pk=film.pk)
+        return redirect("films:film_detail", pk=film.pk)
 
 
 class FilmCreateView(StaffRequiredMixin, CreateView):
     model = Film
     form_class = FilmForm
-    success_url = reverse_lazy('films:film_list')
+    success_url = reverse_lazy("films:film_list")
 
 
 class FilmUpdateView(StaffRequiredMixin, UpdateView):
     model = Film
     form_class = FilmForm
-    success_url = reverse_lazy('films:film_list')
+    success_url = reverse_lazy("films:film_list")
 
 
 class FilmDeleteView(StaffRequiredMixin, DeleteView):
     model = Film
-    success_url = reverse_lazy('films:film_list')
+    success_url = reverse_lazy("films:film_list")

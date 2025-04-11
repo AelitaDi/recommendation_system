@@ -3,10 +3,7 @@ from django.db import models
 
 from films.models import Genre
 
-NULLABLE = {
-    'blank': True,
-    'null': True
-}
+NULLABLE = {"blank": True, "null": True}
 
 
 class User(AbstractUser):
@@ -22,7 +19,13 @@ class User(AbstractUser):
         help_text="Введите номер телефона",
         **NULLABLE,
     )
-    city = models.CharField(max_length=150, verbose_name="Город", help_text="Введите город", blank=True, null=True)
+    city = models.CharField(
+        max_length=150,
+        verbose_name="Город",
+        help_text="Введите город",
+        blank=True,
+        null=True,
+    )
     avatar = models.ImageField(
         upload_to="users/avatars/",
         verbose_name="Аватар",
@@ -32,7 +35,8 @@ class User(AbstractUser):
 
     preferred_genres = models.ManyToManyField(
         Genre,
-        verbose_name='Предпочитаемые жанры', help_text='Выберите интересные жанры'
+        verbose_name="Предпочитаемые жанры",
+        help_text="Выберите интересные жанры",
     )
 
     USERNAME_FIELD = "email"

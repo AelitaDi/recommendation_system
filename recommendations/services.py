@@ -24,14 +24,14 @@ def graph_builder():
     G = nx.Graph()
 
     for user in User.objects.all():
-        G.add_node(f'user_{user.id}', type='user')
+        G.add_node(f"user_{user.id}", type="user")
 
     for film in Film.objects.all():
-        G.add_node(f'film_{film.id}', type='film')
+        G.add_node(f"film_{film.id}", type="film")
 
-    for interaction in Interaction.objects.select_related('user', 'film'):
-        user_node = f'user_{interaction.user.id}'
-        film_node = f'film_{interaction.film.id}'
+    for interaction in Interaction.objects.select_related("user", "film"):
+        user_node = f"user_{interaction.user.id}"
+        film_node = f"film_{interaction.film.id}"
         weight = interaction.rating if interaction.rating else 1.0
         G.add_edge(user_node, film_node, weight=weight)
 
@@ -45,14 +45,14 @@ def digraph_builder():
     DG = nx.DiGraph()
 
     for user in User.objects.all():
-        DG.add_node(f'user_{user.id}', type='user')
+        DG.add_node(f"user_{user.id}", type="user")
 
     for film in Film.objects.all():
-        DG.add_node(f'film_{film.id}', type='film')
+        DG.add_node(f"film_{film.id}", type="film")
 
-    for interaction in Interaction.objects.select_related('user', 'film'):
-        user_node = f'user_{interaction.user.id}'
-        film_node = f'film_{interaction.film.id}'
+    for interaction in Interaction.objects.select_related("user", "film"):
+        user_node = f"user_{interaction.user.id}"
+        film_node = f"film_{interaction.film.id}"
         weight = interaction.rating if interaction.rating else 1.0
         DG.add_edge(user_node, film_node, weight=weight)
 
@@ -87,22 +87,21 @@ def get_statistics():
     new_films_week_count = Film.objects.filter(publish_date__gte=one_week_ago).count()
 
     top_rated_films = Film.objects.annotate(
-        rating_count=Count('interaction__rating')
-    ).order_by('-average_rating', '-rating_count')[:5]
+        rating_count=Count("interaction__rating")
+    ).order_by("-average_rating", "-rating_count")[:5]
 
     top_active_users = User.objects.annotate(
         interaction_count=Count(
-            'interaction',
-            filter=Q(interaction__timestamp__gte=one_week_ago)
+            "interaction", filter=Q(interaction__timestamp__gte=one_week_ago)
         )
-    ).order_by('-interaction_count')[:5]
+    ).order_by("-interaction_count")[:5]
 
     statistics_data = {
-        'films_count': films_count,
-        'users_count': users_count,
-        'new_films_week_count': new_films_week_count,
-        'top_rated_films': top_rated_films,
-        'top_active_users': top_active_users
+        "films_count": films_count,
+        "users_count": users_count,
+        "new_films_week_count": new_films_week_count,
+        "top_rated_films": top_rated_films,
+        "top_active_users": top_active_users,
     }
 
     return statistics_data

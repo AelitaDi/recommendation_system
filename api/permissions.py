@@ -23,5 +23,6 @@ class IsStaffUser(permissions.BasePermission):
     """
     Проверяет, является ли пользователь администратором (is_staff).
     """
+
     def has_permission(self, request, view):
         return request.user and request.user.is_staff
