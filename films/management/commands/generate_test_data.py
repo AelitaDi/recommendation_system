@@ -16,25 +16,25 @@ class Command(BaseCommand):
         parser.add_argument(
             "--num_films",
             type=int,
-            default=30,
+            default=100,
             help="Количество фильмов для генерации (по умолчанию: 100)",
         )
         parser.add_argument(
             "--num_users",
             type=int,
-            default=30,
+            default=50,
             help="Количество пользователей для генерации (по умолчанию: 50)",
         )
         parser.add_argument(
             "--num_producers",
             type=int,
-            default=20,
+            default=30,
             help="Количество режиссеров для генерации (по умолчанию: 30)",
         )
         parser.add_argument(
             "--num_actors",
             type=int,
-            default=20,
+            default=50,
             help="Количество актеров для генерации (по умолчанию: 50)",
         )
 
