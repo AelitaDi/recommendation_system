@@ -3,27 +3,81 @@
 {% block title1 %}
 {% endblock %}
 {% block content %}
-<div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom box-shadow">
-    <div class="row text-start">
-        <h2 class="font-weight-normal">Список режиссеров:</h2>
-        <ul class="list-group mt-3">
-            {% for producer in object_list %}
-            <li class="list-group-item">
-                <h5>{{ producer.name }}</h5>
-                <p>{{ producer.bio|truncatechars:100 }}</p>
-                <p><a href="{% url 'films:producer_detail' producer.pk %}"
-                      class="btn btn-outline-primary">Подробнее...</a>
-                    {% endfor %}
-        </ul>
-        {% include 'films/includes/pagination.html' %}
-        {% if user.is_staff %}
-        <a href="{% url 'films:producer_create' %}" class="btn btn-outline-secondary mt-3">
-            Добавить режиссера
-        </a>
-        {% endif %}
-        <a href="{% url 'films:home' %}" class="btn btn-outline-secondary mt-3">
-            На главную
-        </a>
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="h3 mb-0">
+            <i class="bi bi-person-video3 text-primary me-2"></i>Список режиссеров
+        </h2>
+
+        <div class="d-flex gap-2">
+            <a href="{% url 'films:home' %}" class="btn btn-outline-secondary">
+                <i class="bi bi-house-door me-1"></i> На главную
+            </a>
+            {% if user.is_staff %}
+            <a href="{% url 'films:producer_create' %}" class="btn btn-primary">
+                <i class="bi bi-plus-circle me-1"></i> Добавить режиссера
+            </a>
+            {% endif %}
+        </div>
     </div>
+
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for producer in object_list %}
+        <div class="col">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body">
+                    <div class="d-flex flex-column h-100">
+                        <h3 class="h5 mb-3">{{ producer.name }}</h3>
+                        <p class="text-muted flex-grow-1">{{ producer.bio|truncatechars:150|default:"Описание отсутствует" }}</p>
+                        <div class="mt-auto">
+                            <a href="{% url 'films:producer_detail' producer.pk %}" class="btn btn-outline-primary w-100">
+                                <i class="bi bi-info-circle me-1"></i> Подробнее
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-white border-0 pt-0">
+                    <small class="text-muted">
+                        <i class="bi bi-film me-1"></i> Фильмов: {{ producer.films.count|default:"0" }}
+                    </small>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="text-center py-5">
+                <i class="bi bi-person-x display-4 text-muted mb-3"></i>
+                <p class="h5 text-muted">Режиссеры не найдены</p>
+                {% if user.is_staff %}
+                <a href="{% url 'films:producer_create' %}" class="btn btn-primary mt-3">
+                    <i class="bi bi-plus-circle me-1"></i> Добавить первого режиссера
+                </a>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% if is_paginated %}
+    <div class="mt-4">
+        {% include 'films/includes/pagination.html' %}
+    </div>
+    {% endif %}
 </div>
+
+<style>
+    .card {
+        transition: all 0.3s ease;
+        border-radius: 0.75rem;
+    }
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+    @media (max-width: 767.98px) {
+        .card {
+            border-radius: 0.5rem;
+        }
+    }
+</style>
 {% endblock %}

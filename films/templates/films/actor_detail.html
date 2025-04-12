@@ -1,42 +1,145 @@
 {% extends 'films/base.html' %}
 {% block title %}Актер{% endblock %}
 {% block content %}
-<div class="container">
-    <h3 class="mt-3 mb-3">
-        {{ object.name }}:
-    </h3>
-    <div class="col">
-        <ul class="list-group">
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-                <p>
-                    Имя:
-                </p>
-                <p>
+<div class="container py-4">
+    <div class="card shadow-lg border-0 rounded-3 overflow-hidden">
+        <!-- Заголовок карточки -->
+        <div class="card-header bg-info text-white py-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <h2 class="h4 mb-0">
+                    <i class="bi bi-person-badge me-2"></i>
                     {{ object.name }}
-                </p>
-            </li>
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-                <p>
-                    Биография:
-                </p>
-                <p>
-                    {{ object.bio }}
-                </p>
-            </li>
-        </ul>
-    </div>
-    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-3">
-        <a href="{% url 'films:actor_list' %}" class="btn btn-outline-secondary">
-            к списку актеров
-        </a>
-        {% if user.is_staff %}
-        <a href="{% url 'films:actor_update' object.pk %}" class="btn btn-outline-secondary">
-            Редактировать
-        </a>
-        <a href="{% url 'films:actor_delete' object.pk %}" class="btn btn-outline-danger">
-            Удалить
-        </a>
-        {% endif %}
+                </h2>
+                <span class="badge bg-white text-info">
+                    Актер
+                </span>
+            </div>
+        </div>
+
+        <!-- Основное содержимое -->
+        <div class="card-body">
+            <div class="row">
+                <!-- Блок с фото актера -->
+                <div class="col-md-4 mb-4 mb-md-0">
+                    {% if object.photo %}
+                    <img src="{{ object.photo.url }}" class="img-fluid rounded shadow" alt="{{ object.name }}"
+                         style="max-height: 350px; object-fit: cover;">
+                    {% else %}
+                    <div class="d-flex align-items-center justify-content-center bg-light rounded h-100"
+                         style="min-height: 350px;">
+                        <i class="bi bi-person-square display-4 text-muted"></i>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Информация об актере -->
+                <div class="col-md-8">
+                    <div class="list-group list-group-flush">
+                        <!-- Основная информация -->
+                        <div class="list-group-item border-0 px-0 py-3">
+                            <h5 class="mb-3"><i class="bi bi-info-circle text-info me-2"></i>Основная информация</h5>
+                            <div class="ps-4">
+                                <div class="mb-3">
+                                    <p class="mb-1"><strong>Имя:</strong> {{ object.name }}</p>
+                                    {% if object.birth_date %}
+                                    <p class="mb-1"><strong>Дата рождения:</strong> {{ object.birth_date|date:"d E Y" }}</p>
+                                    {% endif %}
+                                    {% if object.country %}
+                                    <p class="mb-0"><strong>Страна:</strong> {{ object.country }}</p>
+                                    {% endif %}
+                                </div>
+
+                                <p class="mb-0"><strong>Биография:</strong></p>
+                                <div class="bg-light p-3 rounded mt-2">
+                                    {{ object.bio|linebreaks|default:"Биография не указана" }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Фильмы с участием актера -->
+                        {% if object.films.all %}
+                        <div class="list-group-item border-0 px-0 py-3">
+                            <h5 class="mb-3"><i class="bi bi-film text-info me-2"></i>Фильмография</h5>
+                            <div class="ps-4">
+                                <div class="d-flex flex-wrap gap-2 mb-2">
+                                    {% for film in object.films.all|slice:":6" %}
+                                    <a href="{% url 'films:film_detail' film.pk %}"
+                                       class="badge bg-info bg-opacity-10 text-info text-decoration-none">
+                                        {{ film.title }} ({{ film.release_year }})
+                                    </a>
+                                    {% endfor %}
+                                </div>
+                                {% if object.films.count > 6 %}
+                                <div class="collapse" id="moreFilms">
+                                    <div class="d-flex flex-wrap gap-2">
+                                        {% for film in object.films.all|slice:"6:" %}
+                                        <a href="{% url 'films:film_detail' film.pk %}"
+                                           class="badge bg-info bg-opacity-10 text-info text-decoration-none">
+                                            {{ film.title }} ({{ film.release_year }})
+                                        </a>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                <button class="btn btn-sm btn-link text-info p-0"
+                                        type="button"
+                                        data-bs-toggle="collapse"
+                                        data-bs-target="#moreFilms">
+                                    Показать еще {{ object.films.count|add:"-6" }} фильмов
+                                </button>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Футер карточки с кнопками -->
+        <div class="card-footer bg-white border-0 py-3">
+            <div class="d-flex flex-wrap justify-content-between align-items-center">
+                <a href="{% url 'films:actor_list' %}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-1"></i> К списку актеров
+                </a>
+
+                {% if user.is_staff %}
+                <div class="mt-2 mt-md-0 d-flex gap-2">
+                    <a href="{% url 'films:actor_update' object.pk %}" class="btn btn-outline-primary">
+                        <i class="bi bi-pencil me-1"></i> Редактировать
+                    </a>
+                    <a href="{% url 'films:actor_delete' object.pk %}" class="btn btn-outline-danger">
+                        <i class="bi bi-trash me-1"></i> Удалить
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
     </div>
 </div>
+
+<style>
+    .card {
+        transition: all 0.3s ease;
+    }
+    .list-group-item {
+        background-color: transparent;
+    }
+    .badge {
+        transition: all 0.2s ease;
+        white-space: normal;
+        text-align: left;
+    }
+    .badge:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    @media (max-width: 767.98px) {
+        .card {
+            border-radius: 0;
+        }
+        .card-header, .card-footer {
+            padding: 1rem;
+        }
+    }
+</style>
 {% endblock %}

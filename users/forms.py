@@ -16,7 +16,8 @@ class UserRegisterForm(StyleFormMixin, UserCreationForm):
 
     preferred_genres = forms.ModelMultipleChoiceField(
         queryset=Genre.objects.all(),
-        widget=forms.CheckboxSelectMultiple,
+        widget=forms.CheckboxSelectMultiple(attrs={
+            'class': 'genre-selector', }),
         required=False,
         label="Предпочитаемые жанры",
     )
@@ -37,7 +38,8 @@ class UserUpdateForm(StyleFormMixin, UserCreationForm):
 
     preferred_genres = forms.ModelMultipleChoiceField(
         queryset=Genre.objects.all(),
-        widget=forms.CheckboxSelectMultiple,
+        widget=forms.CheckboxSelectMultiple(attrs={
+            'class': 'genre-selector', }),
         required=False,
         label="Предпочитаемые жанры",
     )

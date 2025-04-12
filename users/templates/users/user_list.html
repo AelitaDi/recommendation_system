@@ -1,21 +1,118 @@
 {% extends 'films/base.html' %}
 {% block title %} Главная {% endblock %}
+{% load static %}
+
 {% block title1 %}
-<div class="pricing-header px-2 pb-md-4 text-center">
-    <h2>Список всех пользователей</h2>
+<div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+    <h1 class="display-5">
+        <i class="bi bi-people-fill text-primary me-2"></i>
+        Список пользователей
+    </h1>
+    <p class="lead">Все зарегистрированные пользователи системы</p>
 </div>
 {% endblock %}
-{% block content %}
-<div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom box-shadow">
-    <div class="row text-center">
-        <ul class="list-group">
-            {% for user in object_list %}
-            <li class="list-group-item"><h4 class="my-0 font-weight-normal">{{user.email}}</h4>
-                <p>Телефон: {{user.phone_number}}</p>
-                <p>Город: {{user.city}}</p>
-            {% endfor %}
 
-        </ul>
+{% block content %}
+<div class="container">
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-white border-0 py-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <h2 class="h5 mb-0">
+                    <i class="bi bi-person-lines-fill text-primary me-2"></i>
+                    Всего пользователей: {{ paginator.count }}
+                </h2>
+            </div>
+        </div>
+
+        <div class="card-body p-0">
+            <div class="list-group list-group-flush">
+                {% for user_obj in users %}
+                <div class="list-group-item list-group-item-action border-0 py-3">
+                    <div class="row align-items-center">
+                        <div class="col-md-1 text-center">
+                            {% if user_obj.avatar %}
+                            <img src="{{ user_obj.avatar.url }}"
+                                 class="rounded-circle border"
+                                 width="50" height="50"
+                                 alt="{{ user_obj.email }}">
+                            {% else %}
+                            <div class="rounded-circle d-flex align-items-center justify-content-center bg-light border mx-auto"
+                                 style="width: 50px; height: 50px;">
+                                <span class="text-muted">{{ user_obj.email|first|upper }}</span>
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-5">
+                            <h5 class="mb-1">
+                                {{ user_obj.email }}
+                                {% if user_obj.is_staff %}
+                                <span class="badge bg-warning bg-opacity-10 text-warning ms-2">
+                                    <i class="bi bi-shield-check"></i> Админ
+                                </span>
+                                {% endif %}
+                            </h5>
+                            <small class="text-muted">
+                                Зарегистрирован: {{ user_obj.date_joined|date:"d.m.Y" }}
+                            </small>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="d-flex flex-wrap gap-2">
+                                {% if user_obj.phone_number %}
+                                <span class="badge bg-primary bg-opacity-10 text-primary">
+                                    <i class="bi bi-telephone me-1"></i> {{ user_obj.phone_number }}
+                                </span>
+                                {% endif %}
+                                {% if user_obj.city %}
+                                <span class="badge bg-secondary bg-opacity-10 text-secondary">
+                                    <i class="bi bi-geo-alt me-1"></i> {{ user_obj.city }}
+                                </span>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="col-md-2 text-end">
+                            <a href="{% url 'users:profile' user_obj.pk %}"
+                               class="btn btn-sm btn-outline-primary"
+                               data-bs-toggle="tooltip"
+                               title="Просмотр профиля">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="text-center py-5">
+                    <i class="bi bi-person-x display-4 text-muted mb-3"></i>
+                    <p class="h5 text-muted">Пользователи не найдены</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
     </div>
+
+    {% if is_paginated %}
+    <div class="d-flex justify-content-center mt-4">
+        {% include 'films/includes/pagination.html' %}
+    </div>
+    {% endif %}
 </div>
+
+<style>
+    .list-group-item {
+        transition: all 0.2s ease;
+    }
+    .list-group-item:hover {
+        background-color: #f8f9fa;
+        transform: translateX(2px);
+    }
+    .badge {
+        font-weight: normal;
+        padding: 0.35em 0.65em;
+    }
+    .rounded-circle {
+        object-fit: cover;
+    }
+</style>
 {% endblock %}

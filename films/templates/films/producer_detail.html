@@ -1,42 +1,106 @@
 {% extends 'films/base.html' %}
 {% block title %}Режиссер{% endblock %}
 {% block content %}
-<div class="container">
-    <h3 class="mt-3 mb-3">
-        {{ object.name }}:
-    </h3>
-    <div class="col">
-        <ul class="list-group">
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-                <p>
-                    Имя:
-                </p>
-                <p>
+<div class="container py-4">
+    <div class="card shadow-lg border-0 rounded-3 overflow-hidden">
+        <!-- Заголовок карточки -->
+        <div class="card-header bg-primary text-white py-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <h2 class="h4 mb-0">
+                    <i class="bi bi-person-video3 me-2"></i>
                     {{ object.name }}
-                </p>
-            </li>
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-                <p>
-                    Биография:
-                </p>
-                <p>
-                    {{ object.bio }}
-                </p>
-            </li>
-        </ul>
-    </div>
-    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-3">
-        <a href="{% url 'films:producer_list' %}" class="btn btn-outline-secondary">
-            к списку режиссеров
-        </a>
-        {% if user.is_staff %}
-        <a href="{% url 'films:producer_update' object.pk %}" class="btn btn-outline-secondary">
-            Редактировать
-        </a>
-        <a href="{% url 'films:producer_delete' object.pk %}" class="btn btn-outline-danger">
-            Удалить
-        </a>
-        {% endif %}
+                </h2>
+                <span class="badge bg-white text-primary">
+                    Режиссер
+                </span>
+            </div>
+        </div>
+
+        <!-- Основное содержимое -->
+        <div class="card-body">
+            <div class="row">
+                <!-- Блок с фото режиссера -->
+                <div class="col-md-4 mb-4 mb-md-0">
+                    {% if object.photo %}
+                    <img src="{{ object.photo.url }}" class="img-fluid rounded shadow" alt="{{ object.name }}" style="max-height: 300px; object-fit: cover;">
+                    {% else %}
+                    <div class="d-flex align-items-center justify-content-center bg-light rounded" style="height: 300px;">
+                        <i class="bi bi-person-bounding-box display-4 text-muted"></i>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Информация о режиссере -->
+                <div class="col-md-8">
+                    <div class="list-group list-group-flush">
+                        <div class="list-group-item border-0 px-0 py-3">
+                            <h5 class="mb-3"><i class="bi bi-info-circle text-primary me-2"></i>Основная информация</h5>
+                            <div class="ps-4">
+                                <p class="mb-3"><strong>Имя:</strong> {{ object.name }}</p>
+                                <p class="mb-0"><strong>Биография:</strong></p>
+                                <div class="bg-light p-3 rounded mt-2">
+                                    {{ object.bio|linebreaks|default:"Биография не указана" }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Фильмы режиссера -->
+                        {% if object.films.all %}
+                        <div class="list-group-item border-0 px-0 py-3">
+                            <h5 class="mb-3"><i class="bi bi-film text-primary me-2"></i>Фильмы</h5>
+                            <div class="d-flex flex-wrap gap-2 ps-4">
+                                {% for film in object.films.all %}
+                                <a href="{% url 'films:film_detail' film.pk %}" class="badge bg-primary bg-opacity-10 text-primary text-decoration-none">
+                                    {{ film.title }} ({{ film.release_year }})
+                                </a>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Футер карточки с кнопками -->
+        <div class="card-footer bg-white border-0 py-3">
+            <div class="d-flex flex-wrap justify-content-between align-items-center">
+                <a href="{% url 'films:producer_list' %}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-1"></i> К списку режиссеров
+                </a>
+
+                {% if user.is_staff %}
+                <div class="mt-2 mt-md-0 d-flex gap-2">
+                    <a href="{% url 'films:producer_update' object.pk %}" class="btn btn-outline-primary">
+                        <i class="bi bi-pencil me-1"></i> Редактировать
+                    </a>
+                    <a href="{% url 'films:producer_delete' object.pk %}" class="btn btn-outline-danger">
+                        <i class="bi bi-trash me-1"></i> Удалить
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
     </div>
 </div>
+
+<style>
+    .card {
+        transition: all 0.3s ease;
+    }
+    .list-group-item {
+        background-color: transparent;
+    }
+    .badge {
+        transition: all 0.2s ease;
+    }
+    .badge:hover {
+        transform: translateY(-2px);
+    }
+    @media (max-width: 767.98px) {
+        .card {
+            border-radius: 0;
+        }
+    }
+</style>
 {% endblock %}

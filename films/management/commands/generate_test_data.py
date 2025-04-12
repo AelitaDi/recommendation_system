@@ -28,13 +28,13 @@ class Command(BaseCommand):
         parser.add_argument(
             "--num_producers",
             type=int,
-            default=20,
+            default=30,
             help="Количество режиссеров для генерации (по умолчанию: 30)",
         )
         parser.add_argument(
             "--num_actors",
             type=int,
-            default=20,
+            default=50,
             help="Количество актеров для генерации (по умолчанию: 50)",
         )
 
@@ -56,17 +56,17 @@ class Command(BaseCommand):
         print("Создаю жанры...")
 
         genres = [
-            "Drama",
-            "Detective",
-            "Romance",
-            "Comedy",
-            "History",
-            "Science fiction",
-            "Thriller",
-            "Biography",
-            "Documentary",
-            "Action",
-            "Horror",
+            "Драма",
+            "Детектив",
+            "Мелодрама",
+            "Комедия",
+            "Исторический",
+            "Научная фантастика",
+            "Триллер",
+            "Биография",
+            "Документальный",
+            "Боевик",
+            "Ужасы",
         ]
 
         genre_objects = [Genre(name=name) for name in genres]
