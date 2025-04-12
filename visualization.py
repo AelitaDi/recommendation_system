@@ -9,7 +9,7 @@ django.setup()
 from recommendations.services import (
     graph_builder,
     get_graph_visualization,
-    digraph_builder,
+    # digraph_builder,
 )
 
 if __name__ == "__main__":

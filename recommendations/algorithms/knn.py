@@ -1,8 +1,6 @@
 import os
 import django
 
-from recommendations.services import create_recommendation
-
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
 django.setup()
 
@@ -11,6 +9,7 @@ import math
 from films.models import Film
 from interactions.models import Interaction
 from users.models import User
+from recommendations.services import create_recommendation
 
 
 class KNN:
@@ -81,4 +80,4 @@ class KNN:
 
 
 if __name__ == "__main__":
-    print(KNN.recommendations(66, 5))
+    print(KNN.recommendations(111, 5))
