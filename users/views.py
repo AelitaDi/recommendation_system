@@ -88,11 +88,12 @@ class ProfileUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         return super().form_valid(form)
 
 
-class UserListView(LoginRequiredMixin, ListView):
+class UserListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     """
     Класс для отображения списка пользователей.
     """
 
     model = User
+    permission_required = "users.view_user"
     context_object_name = "users"
     paginate_by = 10

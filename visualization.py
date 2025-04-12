@@ -1,5 +1,3 @@
-import networkx as nx
-
 import os
 import django
 
