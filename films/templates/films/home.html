@@ -1,13 +1,124 @@
 {% extends 'films/base.html' %}
+{% load static %}
 {% block title %} Главная {% endblock %}
+
 {% block title1 %}
-<div class="pricing-header px-2 pb-md-4 text-center">
-    <h2>Приветствуем Вас на главной странице!</h2>
+<div class="hero-section py-5 bg-primary text-white">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                <h1 class="display-4 fw-bold mb-4">
+                    <i class="bi bi-stars me-2"></i>Добро пожаловать в FilmRecSys!
+                </h1>
+                <p class="lead mb-4">Умная система рекомендаций фильмов на основе ваших предпочтений</p>
+                <a href="{% url 'films:recommendations' %}" class="btn btn-light btn-lg px-4 me-2">
+                    <i class="bi bi-magic me-1"></i> Получить рекомендации
+                </a>
+                <a href="#about" class="btn btn-outline-light btn-lg px-4">
+                    <i class="bi bi-info-circle me-1"></i> Узнать больше
+                </a>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}
+
 {% block content %}
-<h3>Для получения рекомендаций наш сервис использует: </h3>
-<h3>Алгоритм K-ближайших-соседей</h3>
-<h3>Алгоритм PageRank</h3>
-<a class="btn btn-outline-secondary mt-3 mb-3" href="{% url 'films:recommendations' %}">Получить рекомендации</a>
+<!-- О проекте -->
+<section id="about" class="py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-4 mb-lg-0">
+                <div class="card border-0 shadow-lg h-100">
+                    <img src="{% static 'images/cinema.jpg' %}" class="card-img-top" alt="Кинотеатр">
+                    <div class="card-body text-center">
+                        <h3 class="h4">Наша миссия</h3>
+                        <p class="card-text">Помогаем вам открывать новые фильмы, которые действительно стоит посмотреть</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <h2 class="display-5 fw-bold mb-4">О проекте</h2>
+                <p class="lead mb-4">FilmRecSys - это интеллектуальная система рекомендаций фильмов, использующая современные алгоритмы машинного обучения для персонализированного подбора контента.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Технологии -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold mb-3">Используемые технологии</h2>
+            <p class="lead text-muted">Наши рекомендации основаны на проверенных алгоритмах</p>
+        </div>
+
+        <div class="row g-4">
+            <!-- Алгоритм KNN -->
+            <div class="col-md-6">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="bg-primary bg-opacity-10 text-primary rounded p-3 me-3">
+                                <i class="bi bi-diagram-3 fs-2"></i>
+                            </div>
+                            <h3 class="h5 mb-0">K-ближайших соседей (KNN)</h3>
+                        </div>
+                        <p class="card-text">Алгоритм находит пользователей с похожими вкусами и рекомендует фильмы, которые понравились им, но которые вы еще не видели.</p>
+                        <ul class="list-unstyled">
+                            <li class="mb-1"><i class="bi bi-check-circle text-primary me-2"></i>Учитывает ваши оценки</li>
+                            <li class="mb-1"><i class="bi bi-check-circle text-primary me-2"></i>Анализирует схожие профили</li>
+                            <li><i class="bi bi-check-circle text-primary me-2"></i>Персонализированные рекомендации</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Алгоритм PageRank -->
+            <div class="col-md-6">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="bg-primary bg-opacity-10 text-primary rounded p-3 me-3">
+                                <i class="bi bi-graph-up fs-2"></i>
+                            </div>
+                            <h3 class="h5 mb-0">PageRank</h3>
+                        </div>
+                        <p class="card-text">Адаптированный алгоритм ранжирования, который определяет популярность фильмов на основе сложных взаимосвязей между пользователями и их оценками.</p>
+                        <ul class="list-unstyled">
+                            <li class="mb-1"><i class="bi bi-check-circle text-primary me-2"></i>Учитывает глобальную популярность</li>
+                            <li class="mb-1"><i class="bi bi-check-circle text-primary me-2"></i>Анализирует "авторитетность" фильмов</li>
+                            <li><i class="bi bi-check-circle text-primary me-2"></i>Баланс между популярным и нишевым</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% if user.is_authenticated %}
+        <div class="text-center mt-5">
+            <a href="{% url 'films:recommendations' %}" class="btn btn-primary btn-lg px-4">
+                <i class="bi bi-stars me-1"></i> Попробовать рекомендации
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<style>
+    .hero-section {
+        background: linear-gradient(135deg, #3a7bd5 0%, #00d2ff 100%);
+        padding: 5rem 0;
+    }
+    .card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border-radius: 0.75rem;
+    }
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+    }
+    section {
+        padding: 4rem 0;
+    }
+</style>
 {% endblock %}

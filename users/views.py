@@ -9,6 +9,7 @@ from django.shortcuts import redirect
 from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, FormView, DetailView, UpdateView, ListView
 
+from interactions.models import Interaction
 from users.forms import UserRegisterForm, UserLoginForm, UserUpdateForm
 from users.models import User
 
@@ -56,12 +57,12 @@ class ProfileView(DetailView):
     template_name = "users/profile.html"
     context_object_name = "profile_user"
 
-    # def get_context_data(self, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #     context['ratings'] = Interaction.objects.filter(
-    #         user=self.object
-    #     ).select_related('film')
-    #     return context
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['ratings'] = Interaction.objects.filter(
+            user=self.object
+        ).select_related('film')
+        return context
 
 
 def my_profile_redirect(request):
@@ -87,11 +88,11 @@ class ProfileUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         return super().form_valid(form)
 
 
-class UserListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
+class UserListView(LoginRequiredMixin, ListView):
     """
     Класс для отображения списка пользователей.
     """
 
     model = User
-    permission_required = "users.view_user"
     context_object_name = "users"
+    paginate_by = 10

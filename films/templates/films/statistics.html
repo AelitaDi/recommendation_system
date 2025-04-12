@@ -2,63 +2,181 @@
 {% block title %}Статистика{% endblock %}
 
 {% block content %}
-<div class="container">
+<div class="container py-4">
     <div class="row justify-content-center">
-        <div class="col-md-10 col-lg-7">
-            <a class="btn btn-outline-secondary mt-3 mb-3" href="{% url 'films:home' %}">На главную</a>
+        <div class="col-md-10 col-xl-8">
+            <a class="btn btn-outline-primary mb-4" href="{% url 'films:home' %}">
+                <i class="bi bi-arrow-left me-2"></i>На главную
+            </a>
 
-            <div class="card shadow-sm">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">Статистика</h5>
+            <div class="card shadow-lg border-0 rounded-3 overflow-hidden">
+                <div class="card-header bg-gradient-primary text-white py-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0"><i class="bi bi-bar-chart-line me-2"></i>Статистика платформы</h4>
+                        <span class="badge bg-white text-primary">{{ today|date:"d M Y" }}</span>
+                    </div>
                 </div>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item d-flex justify-content-between">
-                        <span>Всего фильмов:</span>
-                        <strong>{{ films_count }}</strong>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between">
-                        <span>Всего пользователей:</span>
-                        <strong>{{ users_count }}</strong>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between">
-                        <span>Новых фильмов за неделю:</span>
-                        <strong>{{ new_films_week_count }}</strong>
-                    </li>
 
-                    <!-- Top Rated Films -->
-                    <li class="list-group-item">
-                        <h6 class="mb-2">Самые популярные фильмы:</h6>
-                        <ul class="list-unstyled ps-2">
-                            {% for film in top_rated_films %}
-                                <li class="mb-1">
-                                    <a href="{% url 'films:film_detail' film.pk %}" class="text-decoration-none">
-                                        {{ film.title }} - <span class="text-muted">{{ film.producer.name }}</span>
-                                    </a>
-                                </li>
-                            {% empty %}
-                                <li class="text-muted">Упс. Кажется, еще нет фильмов. Или их еще никто не оценил.</li>
-                            {% endfor %}
-                        </ul>
-                    </li>
+                <div class="card-body p-0">
+                    <!-- Основные метрики -->
+                    <div class="row g-0 p-4">
+                        <div class="col-md-4 mb-3 mb-md-0">
+                            <div class="card h-100 border-0 shadow-sm">
+                                <div class="card-body text-center">
+                                    <h6 class="text-muted mb-3">Всего фильмов</h6>
+                                    <h2 class="text-primary">{{ films_count }}</h2>
+                                    <div class="progress mt-2" style="height: 4px;">
+                                        <div class="progress-bar bg-primary" style="width: 100%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-                    <!-- Top Active Users -->
-                    <li class="list-group-item">
-                        <h6 class="mb-2">Активные пользователи:</h6>
-                        <ul class="list-unstyled ps-2">
+                        <div class="col-md-4 mb-3 mb-md-0">
+                            <div class="card h-100 border-0 shadow-sm">
+                                <div class="card-body text-center">
+                                    <h6 class="text-muted mb-3">Всего пользователей</h6>
+                                    <h2 class="text-success">{{ users_count }}</h2>
+                                    <div class="progress mt-2" style="height: 4px;">
+                                        <div class="progress-bar bg-success" style="width: 100%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="card h-100 border-0 shadow-sm">
+                                <div class="card-body text-center">
+                                    <h6 class="text-muted mb-3">Новых за неделю</h6>
+                                    <h2 class="text-warning">{{ new_films_week_count }}</h2>
+                                    <div class="progress mt-2" style="height: 4px;">
+                                        <div class="progress-bar bg-warning" style="width: 100%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr class="my-2">
+
+                    <!-- Топ фильмов -->
+                    <div class="p-4">
+                        <h5 class="d-flex align-items-center mb-4">
+                            <i class="bi bi-trophy-fill text-warning me-2"></i>
+                            Топ фильмов по рейтингу
+                        </h5>
+
+                        {% if top_rated_films %}
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead class="table-light">
+                                <tr>
+                                    <th>Фильм</th>
+                                    <th>Режиссер</th>
+                                    <th class="text-end">Рейтинг</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for film in top_rated_films %}
+                                <tr>
+                                    <td>
+                                        <a href="{% url 'films:film_detail' film.pk %}"
+                                           class="text-decoration-none d-flex align-items-center">
+                                            <span class="badge bg-primary me-2">{{ forloop.counter }}</span>
+                                            {{ film.title }}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <span class="text-muted">{{ film.producer.name }}</span>
+                                    </td>
+                                    <td class="text-end">
+                                            <span class="badge bg-success bg-opacity-10 text-success">
+                                                <i class="bi bi-star-fill text-warning me-1"></i>
+                                                {{ film.average_rating|default:"-"|floatformat:2 }}
+                                            </span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                        <div class="alert alert-light border text-center py-4">
+                            <i class="bi bi-film text-muted display-6 mb-3"></i>
+                            <p class="mb-0">Пока нет фильмов с рейтингом</p>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <hr class="my-2">
+
+                    <!-- Активные пользователи -->
+                    <div class="p-4">
+                        <h5 class="d-flex align-items-center mb-4">
+                            <i class="bi bi-people-fill text-info me-2"></i>
+                            Самые активные пользователи
+                        </h5>
+
+                        {% if top_active_users %}
+                        <div class="row g-3">
                             {% for user in top_active_users %}
-                                <li class="mb-1">
-                                    <a href="{% url 'users:profile' user.pk %}" class="text-decoration-none">
-                                        {{ user.email }}
-                                    </a>
-                                </li>
-                            {% empty %}
-                                <li class="text-muted">Упс. Не нашлось активных пользователей. Стань первым!.</li>
+                            <div class="col-md-6">
+                                <div class="card border-0 shadow-sm h-100">
+                                    <div class="card-body d-flex align-items-center">
+                                        <div class="flex-shrink-0">
+                                            <div class="avatar avatar-md bg-light text-primary rounded-circle d-flex align-items-center justify-content-center">
+                                                {{ user.email|first|upper }}
+                                            </div>
+                                        </div>
+                                        <div class="flex-grow-1 ms-3">
+                                            <h6 class="mb-1">
+                                                <a href="{% url 'users:profile' user.pk %}"
+                                                   class="text-decoration-none">
+                                                    {{ user.email }}
+                                                </a>
+                                            </h6>
+                                        </div>
+                                        <span class="badge bg-primary bg-opacity-10 text-primary">
+                                            #{{ forloop.counter }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
                             {% endfor %}
-                        </ul>
-                    </li>
-                </ul>
+                        </div>
+                        {% else %}
+                        <div class="alert alert-light border text-center py-4">
+                            <i class="bi bi-person-x text-muted display-6 mb-3"></i>
+                            <p class="mb-0">Нет данных об активных пользователях</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="card-footer bg-light text-center py-3">
+                    <small class="text-muted">
+                        Данные обновлены: {% now "H:i" %}
+                    </small>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    .avatar {
+        width: 40px;
+        height: 40px;
+        font-weight: 600;
+    }
+    .bg-gradient-primary {
+        background: linear-gradient(135deg, #3a7bd5 0%, #00d2ff 100%);
+    }
+    .card {
+        transition: transform 0.2s;
+    }
+    .card:hover {
+        transform: translateY(-2px);
+    }
+</style>
 {% endblock %}

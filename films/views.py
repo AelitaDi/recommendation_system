@@ -122,7 +122,7 @@ class GenreDeleteView(StaffRequiredMixin, DeleteView):
 # Producer CRUD
 class ProducerListView(ListView):
     model = Producer
-    paginate_by = 10
+    paginate_by = 9
 
 
 class ProducerDetailView(DetailView):
@@ -149,7 +149,7 @@ class ProducerDeleteView(StaffRequiredMixin, DeleteView):
 # Actor CRUD
 class ActorListView(ListView):
     model = Actor
-    paginate_by = 10
+    paginate_by = 9
 
 
 class ActorDetailView(DetailView):
@@ -178,19 +178,18 @@ class FilmListView(ListView):
     model = Film
     paginate_by = 10
 
-    # def get_queryset(self):
-    #     if not CACHE_ENABLED:
-    #         return super().get_queryset()
-    #     key = "products_list"
-    #     products = cache.get(key)
-    #     if products is not None:
-    #         return products
-    #     products = super().get_queryset()
-    #     cache.set(key, products, 60 * 15)
-    #     return products
+    def get_queryset(self):
+        if not CACHE_ENABLED:
+            return super().get_queryset()
+        key = "films_list"
+        films = cache.get(key)
+        if films is not None:
+            return films
+        films = super().get_queryset()
+        cache.set(key, films, 60 * 15)
+        return films
 
 
-@method_decorator(login_required, name="dispatch")
 class FilmDetailView(LoginRequiredMixin, DetailView):
     model = Film
 

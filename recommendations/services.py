@@ -63,7 +63,32 @@ def get_graph_visualization(G):
     """
     Визуализация графа.
     """
-    nx.draw(G, with_labels=True)
+
+    # Вычисляем PageRank
+    pagerank = nx.pagerank(G)
+
+    # Нормализуем значения PageRank для размеров узлов
+    node_sizes = [v * 100000 for v in pagerank.values()]
+
+    # Рисуем граф
+    plt.figure(figsize=(10, 8))
+    pos = nx.spring_layout(G)
+
+    # Рисуем узлы с разными размерами
+    values = [pagerank[n] for n in G.nodes()]
+    nx.draw_networkx_nodes(G, pos, node_size=node_sizes, node_color=values)
+
+    nx.draw_networkx_edges(G, pos, arrowstyle='->', arrowsize=10)
+
+    nx.draw_networkx_labels(G, pos, font_size=12, font_weight='bold')
+
+    for node, (x, y) in pos.items():
+        plt.text(x, y + 0.1, f"{pagerank[node]:.3f}",
+                 fontsize=9, ha='center', color='red')
+
+    plt.title("Граф с узлами, размер которых зависит от PageRank")
+    plt.axis('off')
+    plt.tight_layout()
     plt.show()
 
 
