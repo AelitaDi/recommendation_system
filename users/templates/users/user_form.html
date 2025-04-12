@@ -1,0 +1,49 @@
+{% extends 'films/base.html' %}
+{% load my_tags %}
+{% block title %}{% endblock %}
+{% block title1 %}
+<div class="pricing-header px-2 pb-md-4 text-start">
+    {% if user.is_authenticated %}
+    <h1 class="display-5">Редактирование профиля</h1>
+    {% else %}
+    <h1 class="display-5">Регистрация</h1>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-6">
+        <form method="POST" class="post-form row" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p}}
+            <button type="submit" class="save btn btn-outline-primary">
+                {% if user.is_authenticated %}
+                Сохранить изменения
+                {% else %}
+                Зарегистрироваться
+                {% endif %}
+            </button>
+        </form>
+    </div>
+    {% if user.is_authenticated %}
+    <div class="col-6">
+        <div class="card" style="width: 18rem;">
+            {% if user.avatar %}
+                <img src="{{ user.avatar.url }}" class="rounded-circle border" width="150" height="150" alt="User Avatar">
+            {% else %}
+                <div class="rounded-circle d-flex align-items-center justify-content-center bg-light border mt-3 ms-3"
+                     style="width: 150px; height: 150px; font-size: 1.5rem; color: #666;">
+                    {{ user.email|first|upper }}
+                </div>
+            {% endif %}
+            <div class="card-body">
+                <h5 class="card-title">{{ user.email }}</h5>
+                <p class="card-text">Номер телефона: {{ user.phone_number }}</p>
+                <p class="card-text">Город: {{ user.city }}</p>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

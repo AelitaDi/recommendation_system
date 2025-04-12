@@ -1,0 +1,13 @@
+{% extends 'films/base.html' %}
+{% block title %} Главная {% endblock %}
+{% block title1 %}
+<div class="pricing-header px-2 pb-md-4 text-center">
+    <h2>Приветствуем Вас на главной странице!</h2>
+</div>
+{% endblock %}
+{% block content %}
+<h3>Для получения рекомендаций наш сервис использует: </h3>
+<h3>Алгоритм K-ближайших-соседей</h3>
+<h3>Алгоритм PageRank</h3>
+<a class="btn btn-outline-secondary mt-3 mb-3" href="{% url 'films:recommendations' %}">Получить рекомендации</a>
+{% endblock %}

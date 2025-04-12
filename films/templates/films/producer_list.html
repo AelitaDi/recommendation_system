@@ -1,0 +1,29 @@
+{% extends 'films/base.html' %}
+{% block title %} Список режиссеров {% endblock %}
+{% block title1 %}
+{% endblock %}
+{% block content %}
+<div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom box-shadow">
+    <div class="row text-start">
+        <h2 class="font-weight-normal">Список режиссеров:</h2>
+        <ul class="list-group mt-3">
+            {% for producer in object_list %}
+            <li class="list-group-item">
+                <h5>{{ producer.name }}</h5>
+                <p>{{ producer.bio|truncatechars:100 }}</p>
+                <p><a href="{% url 'films:producer_detail' producer.pk %}"
+                      class="btn btn-outline-primary">Подробнее...</a>
+                    {% endfor %}
+        </ul>
+        {% include 'films/includes/pagination.html' %}
+        {% if user.is_staff %}
+        <a href="{% url 'films:producer_create' %}" class="btn btn-outline-secondary mt-3">
+            Добавить режиссера
+        </a>
+        {% endif %}
+        <a href="{% url 'films:home' %}" class="btn btn-outline-secondary mt-3">
+            На главную
+        </a>
+    </div>
+</div>
+{% endblock %}
